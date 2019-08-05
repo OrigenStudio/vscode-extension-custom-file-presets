@@ -1,0 +1,78 @@
+{
+    "name": "create-from-preset",
+    "displayName": "Create From Presets : On The Go",
+    "description": "A small extension that help you to create files from presets.",
+    "version": "0.0.5",
+    "publisher": "ritwickdey",
+    "engines": {
+        "vscode": "^1.14.0"
+    },
+    "author": {
+        "name": "Origen Studios",
+        "email": "hello@origen.studio",
+        "url": "ritwickdey.github.io"
+    },
+    "keywords": [
+        "create from presets"
+    ],
+    "categories": [
+        "Other"
+    ],
+    "preview": true,
+    "galleryBanner": {
+        "color": "#41205f",
+        "theme": "dark"
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "extension.createFile",
+                "title": "Create From Preset",
+                "category": "Files and Folder"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "extension.createFile",
+                "key": "ctrl+alt+n"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "extension.createFile",
+                    "group": "navigation@-createFile"
+                }
+            ]
+        }
+    },
+    "license": "MIT",
+    "icon": "img/icon.png",
+    "bugs": {
+        "url": "https://github.com/ritwickdey/vscode-create-file-folder/issues",
+        "email": "hello@origen.studio"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ritwickdey/vscode-create-file-folder.git"
+    },
+    "homepage": "https://ritwickdey.github.io/vscode-create-file-folder/",
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.5.2",
+        "vscode": "^1.1.5",
+        "mocha": "^3.5.0",
+        "@types/node": "^7.0.43",
+        "@types/mocha": "^2.2.42"
+    }
+}
