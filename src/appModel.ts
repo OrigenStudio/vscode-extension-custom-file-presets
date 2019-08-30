@@ -166,16 +166,16 @@ async function askUserForValueQuestions(questions: Array<PresetQuestion>): Promi
       const acc = await accP;
       return {
         ...acc,
-        [question.key]: await inputBoxQuestions(question)
+        [question.key]: await inputBoxQuestion(question)
       };
     },
     Promise.resolve({})
   );
 }
 
-function inputBoxQuestions(questions) {
+function inputBoxQuestion(question) {
   let options: vscode.InputBoxOptions = {
-    prompt: questions.label
+    prompt: question.label,
   };
 
   return vscode.window.showInputBox(options);

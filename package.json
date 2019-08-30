@@ -3,14 +3,14 @@
     "displayName": "Create From Presets : On The Go",
     "description": "A small extension that help you to create files from presets.",
     "version": "0.0.5",
-    "publisher": "ritwickdey",
+    "publisher": "Origen Studios",
     "engines": {
         "vscode": "^1.14.0"
     },
     "author": {
         "name": "Origen Studios",
         "email": "hello@origen.studio",
-        "url": "ritwickdey.github.io"
+        "url": ""
     },
     "keywords": [
         "create from presets"
@@ -53,14 +53,14 @@
     "license": "MIT",
     "icon": "img/icon.png",
     "bugs": {
-        "url": "https://github.com/ritwickdey/vscode-create-file-folder/issues",
+        "url": "",
         "email": "hello@origen.studio"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ritwickdey/vscode-create-file-folder.git"
+        "url": ""
     },
-    "homepage": "https://ritwickdey.github.io/vscode-create-file-folder/",
+    "homepage": "",
     "scripts": {
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
@@ -74,5 +74,10 @@
         "mocha": "^3.5.0",
         "@types/node": "^7.0.43",
         "@types/mocha": "^2.2.42"
+    },
+    "dependencies": {
+        "@types/lodash": "^4.14.138",
+        "common-tags": "^1.8.0",
+        "lodash": "^4.17.15"
     }
 }
