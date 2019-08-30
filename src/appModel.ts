@@ -7,14 +7,16 @@ type PresetQuestion = {
   label: string;
 };
 
-type QuestionsValues = { [key:string]: string; };
+type QuestionsValues = { [key: string]: string };
 
 type Preset = {
   name: string;
   key: string;
   description: string;
   questions?: Array<PresetQuestion>;
-  files: (values: QuestionsValues) => {
+  files: (
+    values: QuestionsValues
+  ) => {
     [path: string]: string;
   };
 };
@@ -29,30 +31,30 @@ export class AppModel {
   }
 
   async createFile(defaultPath?: string) {
-    defaultPath = defaultPath || "/";
-    // @ts-ignore
-    const projectRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    if (path.resolve(defaultPath) === defaultPath)
-      defaultPath = defaultPath
-        .substring(projectRoot.length)
-        .replace(/\\/g, "/");
-
-    if (!defaultPath.endsWith("/")) defaultPath += "/";
-    const basepath = projectRoot;
-
-    const { relativePath, preset, values } = await askUserForIrcInstance(
-      defaultPath,
-      this.presets
-    );
-
-    if (!relativePath) return;
-    if (!preset) return;
-
-
     try {
+      defaultPath = defaultPath || "/";
+      // @ts-ignore
+      const projectRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+      if (path.resolve(defaultPath) === defaultPath)
+        defaultPath = defaultPath
+          .substring(projectRoot.length)
+          .replace(/\\/g, "/");
+
+      if (!defaultPath.endsWith("/")) defaultPath += "/";
+      const basepath = projectRoot;
+
+      const { relativePath, preset, values } = await askUserForIrcInstance(
+        defaultPath,
+        this.presets
+      );
+
+      if (!relativePath) return;
+      if (!preset) return;
+      if (!values) return;
+
       const fullpath = basepath + relativePath;
 
-      const files = await preset.files(values)   
+      const files = await preset.files(values);
 
       var paths = Object.keys(files).map(file => fullpath + file);
 
@@ -160,22 +162,35 @@ async function askUserForValuePreset(presets) {
   return presets.find(({ key }) => key === presetKey);
 }
 
-async function askUserForValueQuestions(questions: Array<PresetQuestion>): Promise<QuestionsValues> {
-  return await questions.reduce(
-    async (accP, question) => {
+async function askUserForValueQuestions(
+  questions: Array<PresetQuestion>
+): Promise<QuestionsValues | void> {
+  const ERROR_CODE = Symbol("askUserForValueQuestions_cancelled");
+
+  try {
+    return await questions.reduce(async (accP, question) => {
       const acc = await accP;
+      const answer = await inputBoxQuestion(question);
+      if (typeof answer === "undefined") {
+        throw ERROR_CODE;
+      }
+
       return {
         ...acc,
-        [question.key]: await inputBoxQuestion(question)
+        [question.key]: answer
       };
-    },
-    Promise.resolve({})
-  );
+    }, Promise.resolve({}));
+  } catch (error) {
+    if (error === ERROR_CODE) {
+      return undefined;
+    }
+    throw error;
+  }
 }
 
 function inputBoxQuestion(question) {
   let options: vscode.InputBoxOptions = {
-    prompt: question.label,
+    prompt: question.label
   };
 
   return vscode.window.showInputBox(options);
@@ -193,7 +208,9 @@ async function askUserForIrcInstance(defaultPath: string, presets: Preset[]) {
   if (!preset) return {};
 
   return {
-    relativePath: relativePath.endsWith("/") ? relativePath : `${relativePath}/`,
+    relativePath: relativePath.endsWith("/")
+      ? relativePath
+      : `${relativePath}/`,
     preset,
     values: preset.questions
       ? await askUserForValueQuestions(preset.questions)
