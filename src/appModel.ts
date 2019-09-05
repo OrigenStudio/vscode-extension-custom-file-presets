@@ -1,10 +1,13 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
+import { upperFirst } from "lodash";
+import * as yup from "yup";
 
 type PresetQuestion = {
   key: string;
   label: string;
+  validationSchema?: typeof yup.string;
 };
 
 type QuestionsValues = { [key: string]: string };
@@ -188,9 +191,25 @@ async function askUserForValueQuestions(
   }
 }
 
-function inputBoxQuestion(question) {
-  let options: vscode.InputBoxOptions = {
-    prompt: question.label
+function inputBoxQuestion({
+  validationSchema = yup.string(),
+  label
+}: PresetQuestion) {
+  const required = !!validationSchema
+    .describe()
+    .tests.find(test => test.name === "required");
+  const options: vscode.InputBoxOptions = {
+    prompt: `${label}${required ? "(*)" : ""}`,
+    validateInput: value => {
+      var error = undefined;
+      try {
+        validationSchema.validateSync(value);
+      } catch (validationError) {
+        return validationError.errors.map(error => upperFirst(error)).join(" ");
+      }
+
+      return error;
+    }
   };
 
   return vscode.window.showInputBox(options);

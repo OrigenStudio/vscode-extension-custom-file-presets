@@ -1,9 +1,10 @@
-import { uniq } from 'lodash';
+import { uniq } from "lodash";
+import * as yup from "yup";
 
 import { AppModel } from "../appModel";
-import templateJS from '../helpers/templateJS';
-import classNamesToClassKeyType from '../helpers/classNamesToClassKeyType';
-import classNamesToClassStyles from '../helpers/classNamesToClassStyles';
+import templateJS from "../helpers/templateJS";
+import classNamesToClassKeyType from "../helpers/classNamesToClassKeyType";
+import classNamesToClassStyles from "../helpers/classNamesToClassStyles";
 
 AppModel.addPreset({
   name: "Styled Component File",
@@ -12,14 +13,15 @@ AppModel.addPreset({
   questions: [
     {
       key: "componentName",
-      label: "Name of the component"
+      label: "Name of the component",
+      validationSchema: yup.string().required()
     },
     {
       key: "classNames",
       label: "Introduce the Class Names (separated with spaces)"
     }
   ],
-  files: ({ componentName = 'StyledComponent', classNames }) => {
+  files: ({ componentName = "StyledComponent", classNames }) => {
     const classesArray = ["root", ...(classNames ? classNames.split(" ") : [])];
     return {
       [`${componentName}.jsx`]: templateJS`
@@ -31,7 +33,7 @@ AppModel.addPreset({
         } from '@material-ui/core/styles/withStyles';
         import type { Theme } from '@material-ui/core/styles/createMuiTheme';
         import classnames from 'classnames';
-import classNamesToClassStyles from '../helpers/classNamesToClassStyles';
+        import classNamesToClassStyles from '../helpers/classNamesToClassStyles';
 
         export type ClassKey = ${classNamesToClassKeyType(uniq(classesArray))};
 

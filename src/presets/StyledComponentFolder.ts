@@ -1,4 +1,5 @@
 import { uniq } from 'lodash';
+import * as yup from "yup";
 
 import { AppModel } from "../appModel";
 import templateJS from '../helpers/templateJS';
@@ -12,7 +13,8 @@ AppModel.addPreset({
   questions: [
     {
       key: "componentName",
-      label: "Name of the component"
+      label: "Name of the component",
+      validationSchema: yup.string().required()
     },
     {
       key: "classNames",
